@@ -1,9 +1,10 @@
-import { Injector, Service, computed, inject, runInInjectionContext } from '@angular/core';
+import { Injector, Service, computed, inject, runInInjectionContext, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import {
   Auth,
   GoogleAuthProvider,
   authState,
+  getRedirectResult,
   setPersistence,
   signInWithPopup,
   signInWithRedirect,
@@ -21,11 +22,17 @@ export class AuthService {
   readonly usuario$ = authState(this.auth);
   readonly usuario = toSignal(this.usuario$, { initialValue: null });
   readonly autenticado = computed(() => this.usuario() !== null);
+  readonly errorRedirect = signal<unknown>(null);
+
+  constructor() {
+    void this.resolveRedirectResult();
+  }
 
   async iniciarSesionConGoogle(): Promise<void> {
     const provider = new GoogleAuthProvider();
     provider.setCustomParameters({ prompt: 'select_account' });
 
+    this.errorRedirect.set(null);
     await this.ensureLocalPersistence();
 
     try {
@@ -51,6 +58,20 @@ export class AuthService {
     await runInInjectionContext(this.injector, () =>
       setPersistence(this.auth, browserLocalPersistence),
     );
+  }
+
+  private async resolveRedirectResult(): Promise<void> {
+    try {
+      const credential = await runInInjectionContext(this.injector, () =>
+        getRedirectResult(this.auth),
+      );
+
+      if (credential?.user) {
+        await this.router.navigateByUrl('/mediciones');
+      }
+    } catch (error) {
+      this.errorRedirect.set(error);
+    }
   }
 
   private shouldFallbackToRedirect(error: unknown): boolean {
