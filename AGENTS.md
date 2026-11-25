@@ -178,3 +178,6 @@ editarlas a mano: se actualizan desde su repositorio de origen.
 - usar código limpio. nombres, funciones y variables, etc en ingles.
 - las variables declaradas deben tener un significado y ser coherentes con el nombre.
 - No repetir código.
+
+## MCPs
+ - playwright screenshots y cualquiera cosa relacionado a playwright tiene que estar en la carpeta .playwright-mcp

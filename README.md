@@ -5,7 +5,8 @@ Aplicación Angular para registrar las medidas de los tanques del grifo. El acce
 
 ## Alcance
 
-- Inicio de sesión con Google. No hay registro público de cuentas.
+- Inicio de sesión con Google. No hay registro público de cuentas: cualquier cuenta de Google
+  puede ingresar y el administrador del grifo puede bloquear las que no desee.
 - Registro de la medida de los tanques de diésel, regular y premium.
 - Historial de las últimas 30 medidas con fecha y usuario.
 - Sin backend propio: Firebase es la única persistencia.
@@ -59,7 +60,7 @@ providers (`provideFirebaseApp`, `provideAuth`, `provideFirestore`).
    npx firebase-tools deploy --only firestore:rules
    ```
 
-8. Ejecuta la app y prueba el login con una cuenta de Google autorizada.
+8. Ejecuta la app y prueba el login con una cuenta de Google.
 
 > Los valores web de Firebase (`apiKey`, `authDomain`, etc.) son públicos: identifican el
 > proyecto, no autorizan operaciones. La seguridad real está en `firestore.rules`.
@@ -72,6 +73,20 @@ npm start
 
 Abre `http://localhost:4200/`. La ruta `/mediciones` está protegida: sin sesión redirige a
 `/login`.
+
+## Inicio de sesión
+
+- Cualquier cuenta de Google puede ingresar. No hay lista blanca de correos ni de UID.
+- El administrador del grifo puede bloquear el acceso de cuentas no deseadas desde Firebase
+  Console (**Authentication → Users**). Una cuenta bloqueada no puede volver a iniciar sesión.
+- El botón "Continuar con Google" abre el selector de cuentas en una ventana emergente. Si el
+  navegador bloquea la ventana, la app reintenta automáticamente con una redirección de página.
+- Al volver de la redirección, la app procesa el resultado y entra a `/mediciones`.
+- La sesión se guarda en el almacenamiento local del navegador (`browserLocalPersistence`): se
+  mantiene al recargar y al cerrar y reabrir el navegador.
+- "Salir" cierra la sesión y elimina la sesión persistida.
+- Si el login falla, la pantalla muestra un mensaje genérico en español; el detalle técnico queda
+  en la consola del navegador.
 
 ## Estructura
 
@@ -111,10 +126,11 @@ tanque.
 
 ## Seguridad
 
-- Las reglas permiten leer a cualquier usuario autenticado.
+- Las reglas permiten leer a cualquier usuario autenticado con Google.
+- No hay lista blanca de correos ni de UID: el bloqueo de cuentas se hace en Firebase Console
+  (**Authentication → Users**), no desde la app.
 - Solo se pueden crear medidas a nombre del propio usuario.
 - No se permite editar ni borrar desde el cliente.
-- La gestión de usuarios (altas, bloqueos) se hace en Firebase Console, no desde la app.
 
 ## Build
 

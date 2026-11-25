@@ -6,8 +6,8 @@
     </button>
   </div>
 
-  <!-- <div class="overflow-x-auto">
-    <table class="table sm:table-xs md:table-xl">
+  <div class="overflow-x-auto">
+    <!-- <table class="table sm:table-xs md:table-xl">
       <thead>
         <tr>
           <th>Fecha</th>
@@ -19,7 +19,7 @@
       </thead>
       @if (listaMeasure.hasValue()) {
         <tbody>
-          @for (item of listaMeasure.value() || []; track $index) {
+          @for (item of []; track $index) {
             <tr class="hover:bg-gray-300">
               <td class="text-xs md:text-xl">{{ item.fechaMedicion | date: 'short' }}</td>
               <td>
@@ -62,16 +62,16 @@
           <th>Primiun</th>
         </tr>
       </tfoot>
-    </table>
+    </table> -->
     @if (listaMeasure.hasValue()) {
       <app-pagination
-        [pages]="listaMeasure.value().totalPages"
-        [totalElements]="listaMeasure.value().totalElements"
+        /* [pages]="listaMeasure.value().totalPages"
+        [totalElements]="listaMeasure.value().totalElements" */
         [currentPage]="_linkService.currentPage()"
         [currentSize]="_linkService.currentSize()"
       />
     }
-  </div> -->
+  </div>
 </div>
 <dialog #modalMedidaRef id="my_modal_3" class="modal">
   <div class="modal-box">

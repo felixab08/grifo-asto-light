@@ -43,6 +43,9 @@ __screenshots__/
 .DS_Store
 Thumbs.db
 
+# Playwright MCP
+.playwright-mcp/
+
 # Firebase
 .firebase
 *-debug.log

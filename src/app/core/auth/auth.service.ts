@@ -29,6 +29,7 @@ export class AuthService {
   }
 
   async iniciarSesionConGoogle(): Promise<void> {
+
     const provider = new GoogleAuthProvider();
     provider.setCustomParameters({ prompt: 'select_account' });
 
@@ -78,8 +79,7 @@ export class AuthService {
     const code = (error as { code?: string } | null)?.code;
 
     return (
-      code === 'auth/popup-blocked' ||
-      code === 'auth/operation-not-supported-in-this-environment'
+      code === 'auth/popup-blocked' || code === 'auth/operation-not-supported-in-this-environment'
     );
   }
 }

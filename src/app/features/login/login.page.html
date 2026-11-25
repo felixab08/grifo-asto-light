@@ -67,16 +67,17 @@
     </button>
 
     <p class="mt-4 text-center text-xs text-slate-500">
-      Solo cuentas autorizadas por el administrador del grifo.
+      Ingresa con tu cuenta de Google. El administrador del grifo puede bloquear el acceso de
+      cuentas no deseadas.
     </p>
 
-    @if (error()) {
+    @if (mensajeError()) {
       <p
         class="mt-4 rounded-lg border border-red-300 bg-red-50 p-3 text-sm text-red-700"
         role="alert"
         aria-live="polite"
       >
-        {{ error() }}
+        {{ mensajeError() }}
       </p>
     }
   </div>
