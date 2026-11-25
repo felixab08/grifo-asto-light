@@ -1,6 +1,6 @@
 # SPEC 01 — Revisión y corrección del login con Google
 
-> **Estado:** Borrador
+> **Estado:** Aprovado
 > **Depende de:** —
 > **Fecha:** 2026-11-25
 > **Objetivo:** Revisar el login con Google existente y corregir el fallback popup/redirect, la persistencia local, los mensajes de error y el texto de acceso.
