@@ -1,0 +1,33 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // La medida física se registra en la misma escala que la app anterior: 0 a 230.
+    function medidaValida(valor) {
+      return valor is number && valor >= 0 && valor <= 230;
+    }
+
+    match /mediciones/{medicionId} {
+      // Cualquier usuario autenticado puede consultar el historial del grifo.
+      allow read: if request.auth != null;
+
+      // Solo se crean medidas a nombre del usuario autenticado.
+      allow create: if request.auth != null
+        && medidaValida(request.resource.data.diesel)
+        && medidaValida(request.resource.data.regular)
+        && medidaValida(request.resource.data.premium)
+        && request.resource.data.registradoPor.uid == request.auth.uid
+        && (
+          !('observacion' in request.resource.data)
+          || request.resource.data.observacion == null
+          || (
+            request.resource.data.observacion is string
+            && request.resource.data.observacion.size() <= 300
+          )
+        );
+
+      // El historial es inmutable desde el cliente.
+      allow update, delete: if false;
+    }
+  }
+}
