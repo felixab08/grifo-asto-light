@@ -1,193 +1,163 @@
-<div class="relative overflow-x-auto shadow-md sm:rounded-lg px-5 md:px-10 m-4">
-  <div class="z-5 fixed top-16 bg-base-100 w-full py-4">
-    <h1 class="text-xs md:text-2xl font-semibold mb-2">Medición de combustible</h1>
-    <button class="btn btn-outline btn-accent min-w-36" onclick="my_modal_3.showModal()">
-      Nueva medición
-    </button>
+<section class="space-y-6">
+  <div class="flex flex-wrap items-end justify-between gap-3">
+    <div class="space-y-1">
+      <h1 class="text-2xl font-semibold tracking-tight">Medición de combustible</h1>
+      <p class="max-w-2xl text-sm opacity-70">
+        Registra la lectura de cada tanque. La fecha y el usuario se guardan automáticamente.
+      </p>
+    </div>
+
+    <button type="button" class="btn btn-accent" (click)="abrirModal()">Nueva medición</button>
   </div>
 
-  <div class="overflow-x-auto">
-    <!-- <table class="table sm:table-xs md:table-xl">
-      <thead>
-        <tr>
-          <th>Fecha</th>
-          <th>Petroleo</th>
-          <th>Regular</th>
-          <th>Premiun</th>
-          <th>Opciones</th>
-        </tr>
-      </thead>
-      @if (listaMeasure.hasValue()) {
+  <div class="overflow-x-auto rounded-box border border-base-300 bg-base-100 shadow-sm">
+    @if (medicionesResource.isLoading()) {
+      <p class="p-8 text-center text-sm opacity-70" role="status">Cargando medidas…</p>
+    } @else if (medicionesResource.error()) {
+      <div class="p-8 text-center">
+        <p class="text-sm text-error" role="alert">No se pudieron cargar las medidas.</p>
+        <button type="button" class="btn btn-sm mt-3" (click)="medicionesResource.reload()">
+          Reintentar
+        </button>
+      </div>
+    } @else if (mediciones().length === 0) {
+      <p class="p-8 text-center text-sm opacity-70">
+        Aún no hay medidas registradas. Usa «Nueva medición» para guardar la primera.
+      </p>
+    } @else {
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Fecha</th>
+            <th scope="col">Diésel</th>
+            <th scope="col">Regular</th>
+            <th scope="col">Premium</th>
+          </tr>
+        </thead>
         <tbody>
-          @for (item of []; track $index) {
-            <tr class="hover:bg-gray-300">
-              <td class="text-xs md:text-xl">{{ item.fechaMedicion | date: 'short' }}</td>
-              <td>
-                <p>{{ item.diesel }} cm</p>
-                <p class="font-bold">{{ item.diesel | diesel }} GL</p>
+          @for (medicion of mediciones(); track medicion.id) {
+            <tr>
+              <td class="whitespace-nowrap text-sm">
+                {{ fecha(medicion) }}
+                <span class="block text-xs opacity-60">
+                  {{ medicion.registradoPor.nombre || medicion.registradoPor.email || 'Usuario' }}
+                </span>
               </td>
               <td>
-                <p>{{ item.regular }} cm</p>
-                <p class="font-bold">{{ item.regular | regular }} GL</p>
+                <span class="block text-sm">{{ medicion.diesel }} cm</span>
+                <span class="block text-sm font-semibold">{{ medicion.diesel | diesel }} GL</span>
               </td>
               <td>
-                <p>{{ item.premiun }} cm</p>
-                <p class="font-bold">{{ item.premiun | premium }} GL</p>
+                <span class="block text-sm">{{ medicion.regular }} cm</span>
+                <span class="block text-sm font-semibold">
+                  {{ medicion.regular | regular }} GL
+                </span>
               </td>
               <td>
-                <i
-                  (click)="openModal(item, modalMedidaRef)"
-                  class="fa fa-pencil mx-2 cursor-pointer hover:text-amber-600"
-                  aria-hidden="true"
-                ></i>
-                <i
-                  (click)="deleteMedida(item.idMedicion)"
-                  class="fa fa-trash mx-2 cursor-pointer hover:text-amber-600"
-                  aria-hidden="true"
-                ></i>
+                <span class="block text-sm">{{ medicion.premium }} cm</span>
+                <span class="block text-sm font-semibold">
+                  {{ medicion.premium | premium }} GL
+                </span>
               </td>
             </tr>
-          } @empty {
-            <p class="text-center w-max">
-              <i class="fa-info-circle fa" aria-hidden="true"></i> No hay información para mostrar
-            </p>
           }
         </tbody>
-      }
-      <tfoot>
-        <tr>
-          <th>Fecha</th>
-          <th>Petroleo</th>
-          <th>Regular</th>
-          <th>Primiun</th>
-        </tr>
-      </tfoot>
-    </table> -->
-    @if (listaMeasure.hasValue()) {
-      <app-pagination
-        /* [pages]="listaMeasure.value().totalPages"
-        [totalElements]="listaMeasure.value().totalElements" */
-        [currentPage]="_linkService.currentPage()"
-        [currentSize]="_linkService.currentSize()"
-      />
+      </table>
     }
   </div>
-</div>
-<dialog #modalMedidaRef id="my_modal_3" class="modal">
-  <div class="modal-box">
-    <h3 class="font-bold text-lg mb-4">Medición de combustible</h3>
+</section>
 
-    <form method="dialog" autocomplete="off" [formGroup]="myForm" (ngSubmit)="onSave()">
-      <div class="mt-5">
-        <label
-          for="diesel"
-          class="block mb-2 text-sm font-medium"
-          [ngClass]="{
-            ' text-red-700 dark:text-red-500': formUtils.isValiedField(myForm, 'diesel'),
-          }"
-          >Petroleo</label
-        >
+<dialog #dialogoMedida class="modal" aria-labelledby="titulo-medicion">
+  <div class="modal-box">
+    <h2 id="titulo-medicion" class="text-lg font-bold">Nueva medición</h2>
+    <p class="text-sm opacity-70">Rango permitido: 0 a {{ maxMeasure }} cm por tanque.</p>
+
+    <form class="mt-5 space-y-4" (submit)="guardar($event)" novalidate>
+      <div>
+        <label for="diesel" class="label">
+          <span class="label-text font-medium">Diésel</span>
+        </label>
         <input
-          type="number"
           id="diesel"
-          formControlName="diesel"
-          class="border text-sm input-md input rounded-lg block w-full p-2.5"
-          [ngClass]="{
-            ' border-red-500 text-red-900 placeholder-red-700 focus:ring-red-500 focus:border-red-500 dark:text-red-500 dark:placeholder-red-500 dark:border-red-500 ':
-              formUtils.isValiedField(myForm, 'diesel'),
-          }"
+          type="number"
+          inputmode="decimal"
+          step="0.01"
+          [formField]="measurementForm.diesel"
+          class="input w-full"
+          [class.input-error]="mostrarError(measurementForm.diesel())"
+          [attr.aria-invalid]="mostrarError(measurementForm.diesel()) ? 'true' : null"
+          [attr.aria-describedby]="mostrarError(measurementForm.diesel()) ? 'diesel-error' : null"
         />
-        @if (formUtils.isValiedField(myForm, 'diesel')) {
-          <p class="mt-2 text-sm text-red-600 dark:text-red-500">
-            <span class="font-medium">{{ formUtils.getFieldError(myForm, 'diesel') }}</span>
+        <p class="text-end text-sm font-semibold">
+          {{ measurementForm.diesel().value() | diesel }} GL
+        </p>
+        @if (mostrarError(measurementForm.diesel())) {
+          <p id="diesel-error" class="text-sm text-error" role="alert">
+            {{ mensajeError(measurementForm.diesel()) }}
           </p>
         }
-        <p class="font-bold justify-end flex text-left">
-          {{ $safeNavigationMigration(myForm.get('diesel')?.value) | diesel }} GL
-        </p>
       </div>
-      <!-- // * campo input -->
-      <div class="mt-5">
-        <label
-          for="regular"
-          class="block mb-2 text-sm font-medium"
-          [ngClass]="{
-            ' text-red-700 dark:text-red-500': formUtils.isValiedField(myForm, 'regular'),
-          }"
-          >Regular</label
-        >
+
+      <div>
+        <label for="regular" class="label">
+          <span class="label-text font-medium">Regular</span>
+        </label>
         <input
-          type="number"
           id="regular"
-          formControlName="regular"
-          class="border text-sm input-md input rounded-lg block w-full p-2.5"
-          [ngClass]="{
-            ' border-red-500 text-red-900 placeholder-red-700 focus:ring-red-500 focus:border-red-500 dark:text-red-500 dark:placeholder-red-500 dark:border-red-500 ':
-              formUtils.isValiedField(myForm, 'regular'),
-          }"
-        />
-        @if (formUtils.isValiedField(myForm, 'regular')) {
-          <p class="mt-2 text-sm text-red-600 dark:text-red-500">
-            <span class="font-medium">{{ formUtils.getFieldError(myForm, 'regular') }}</span>
-          </p>
-        }
-        <p class="font-bold justify-end flex text-left">
-          {{ $safeNavigationMigration(myForm.get('regular')?.value) | regular }} GL
-        </p>
-      </div>
-      <!-- // * campo input -->
-      <div class="mt-5">
-        <label
-          for="premiun"
-          class="block mb-2 text-sm font-medium"
-          [ngClass]="{
-            ' text-red-700 dark:text-red-500': formUtils.isValiedField(myForm, 'premiun'),
-          }"
-          >Premiun</label
-        >
-        <input
           type="number"
-          id="premiun"
-          formControlName="premiun"
-          class="border text-sm input-md input rounded-lg block w-full p-2.5"
-          [ngClass]="{
-            ' border-red-500 text-red-900 placeholder-red-700 focus:ring-red-500 focus:border-red-500 dark:text-red-500 dark:placeholder-red-500 dark:border-red-500 ':
-              formUtils.isValiedField(myForm, 'premiun'),
-          }"
+          inputmode="decimal"
+          step="0.01"
+          [formField]="measurementForm.regular"
+          class="input w-full"
+          [class.input-error]="mostrarError(measurementForm.regular())"
+          [attr.aria-invalid]="mostrarError(measurementForm.regular()) ? 'true' : null"
+          [attr.aria-describedby]="mostrarError(measurementForm.regular()) ? 'regular-error' : null"
         />
-        @if (formUtils.isValiedField(myForm, 'premiun')) {
-          <p class="mt-2 text-sm text-red-600 dark:text-red-500">
-            <span class="font-medium">{{ formUtils.getFieldError(myForm, 'premiun') }}</span>
+        <p class="text-end text-sm font-semibold">
+          {{ measurementForm.regular().value() | regular }} GL
+        </p>
+        @if (mostrarError(measurementForm.regular())) {
+          <p id="regular-error" class="text-sm text-error" role="alert">
+            {{ mensajeError(measurementForm.regular()) }}
           </p>
         }
-        <p class="font-bold justify-end flex text-left">
-          {{ $safeNavigationMigration(myForm.get('premiun')?.value) | premium }} GL
-        </p>
       </div>
-      <button
-        type="button"
-        class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
-        onclick="my_modal_3.close()"
-      >
-        ✕
-      </button>
-      <div class="md:flex md:justify-end mt-2">
-        <button
-          type="button"
-          class="btn btn-active font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center mr-2 mb-2 md:mb-0"
-          onclick="my_modal_3.close()"
-        >
-          Salir
-        </button>
-        <button
-          type="submit"
-          [disabled]="!myForm.valid"
-          class="text-white bg-accent focus:ring-4 focus:outline-none font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
-          ngClass="disabled:bg-accent/40 disabled:cursor-not-allowed"
-        >
-          Guardar
+
+      <div>
+        <label for="premium" class="label">
+          <span class="label-text font-medium">Premium</span>
+        </label>
+        <input
+          id="premium"
+          type="number"
+          inputmode="decimal"
+          step="0.01"
+          [formField]="measurementForm.premium"
+          class="input w-full"
+          [class.input-error]="mostrarError(measurementForm.premium())"
+          [attr.aria-invalid]="mostrarError(measurementForm.premium()) ? 'true' : null"
+          [attr.aria-describedby]="mostrarError(measurementForm.premium()) ? 'premium-error' : null"
+        />
+        <p class="text-end text-sm font-semibold">
+          {{ measurementForm.premium().value() | premium }} GL
+        </p>
+        @if (mostrarError(measurementForm.premium())) {
+          <p id="premium-error" class="text-sm text-error" role="alert">
+            {{ mensajeError(measurementForm.premium()) }}
+          </p>
+        }
+      </div>
+
+      <div class="modal-action">
+        <button type="button" class="btn" (click)="cerrarModal()">Cancelar</button>
+        <button type="submit" class="btn btn-accent" [disabled]="saving()">
+          {{ saving() ? 'Guardando…' : 'Guardar' }}
         </button>
       </div>
     </form>
   </div>
+
+  <form method="dialog" class="modal-backdrop">
+    <button type="submit">Cerrar</button>
+  </form>
 </dialog>

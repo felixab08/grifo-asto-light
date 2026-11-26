@@ -155,6 +155,17 @@ editarlas a mano: se actualizan desde su repositorio de origen.
 - Antes de tocar Authentication o Firestore, consultar la skill de Firebase correspondiente.
 - El código y las specs deben respetar estas guías; si contradicen una costumbre, gana la skill.
 
+## Agentes del proyecto
+
+| Agente          | Cuándo usarlo                                                                                                                                                     |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `spec-verifier` | Verifica los criterios de aceptación de una spec, corrige fallos dentro del alcance y marca los checks con evidencia. Usa Playwright y visión para las pantallas. |
+
+- Se define en `.opencode/agents/spec-verifier.md` y usa `opencode/deepseek-v4.1-flash-free`
+  (acepta imágenes).
+- Invócalo con la ruta de la spec, por ejemplo: `Verifica specs/01-revision-login-google.md`.
+- No commitea, no cambia de rama, no publica reglas y no modifica el estado de la spec.
+
 ## Flujo de trabajo obligatorio (specs)
 
 - **Antes de diseñar o implementar una spec, leer en este orden:**
@@ -180,4 +191,5 @@ editarlas a mano: se actualizan desde su repositorio de origen.
 - No repetir código.
 
 ## MCPs
- - playwright screenshots y cualquiera cosa relacionado a playwright tiene que estar en la carpeta .playwright-mcp
+
+- playwright screenshots y cualquiera cosa relacionado a playwright tiene que estar en la carpeta .playwright-mcp

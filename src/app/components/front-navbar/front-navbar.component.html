@@ -1,0 +1,82 @@
+<div class="navbar bg-base-100 shadow-sm z-10 top-0 fixed">
+  <div class="navbar-start">
+    <div class="flex items-center justify-center w-10 h-10 rounded-l">
+      <img src="./assets/images/logo-1.png" class="rounded-xl" alt="" />
+    </div>
+  </div>
+  <div class="navbar-center hidden lg:flex"></div>
+  <div class="navbar-end">
+    <!-- temas -->
+    <div class="dropdown">
+      <div
+        tabindex="0"
+        class="bg-base-100 group-hover:border-base-content/20 border-base-content/10 grid shrink-0 grid-cols-2 gap-0.5 rounded-md border p-1 transition-colors size-5"
+      >
+        <div class="bg-base-content size-1 rounded-full"></div>
+        <div class="bg-primary size-1 rounded-full"></div>
+        <div class="bg-secondary size-1 rounded-full"></div>
+        <div class="bg-accent size-1 rounded-full"></div>
+      </div>
+    </div>
+    <ul tabindex="-1" class="dropdown-content bg-base-300 rounded-box z-1 w-52 p-2 shadow-2xl">
+      <li>
+        <input
+          type="radio"
+          name="theme-dropdown"
+          class="theme-controller w-full btn btn-sm btn-block btn-ghost justify-start"
+          aria-label="Retro"
+          value="retro"
+          (change)="onThemeChange($event)"
+          [checked]="selectedTheme === 'retro'"
+        />
+      </li>
+      <li>
+        <input
+          type="radio"
+          name="theme-dropdown"
+          select
+          class="theme-controller w-full btn btn-sm btn-block btn-ghost justify-start"
+          aria-label="Winter"
+          value="winter"
+          (change)="onThemeChange($event)"
+          [checked]="selectedTheme === 'winter'"
+        />
+      </li>
+      <li>
+        <input
+          type="radio"
+          name="theme-dropdown"
+          class="theme-controller w-full btn btn-sm btn-block btn-ghost justify-start"
+          aria-label="Valentine"
+          value="valentine"
+          (change)="onThemeChange($event)"
+          [checked]="selectedTheme === 'valentine'"
+        />
+      </li>
+      <li>
+        <input
+          type="radio"
+          name="theme-dropdown"
+          class="theme-controller w-full btn btn-sm btn-block btn-ghost justify-start"
+          aria-label="Dark"
+          value="dark"
+          (change)="onThemeChange($event)"
+          [checked]="selectedTheme === 'dark'"
+        />
+      </li>
+      <li>
+        <input
+          type="radio"
+          name="theme-dropdown"
+          class="theme-controller w-full btn btn-sm btn-block btn-ghost justify-start"
+          aria-label="Forest"
+          value="forest"
+          (change)="onThemeChange($event)"
+          [checked]="selectedTheme === 'forest'"
+        />
+      </li>
+    </ul>
+    <p class="text-xs md:text-2xl font-medium mx-4">Felix asto</p>
+    <a class="btn" routerLink="/">Salir</a>
+  </div>
+</div>
