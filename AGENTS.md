@@ -1,5 +1,8 @@
 # AGENTS.md — Grifo Asto Light
 
+## Respuestas
+- respondeme siempre en español
+
 ## Contexto del producto
 
 Aplicación web para el grifo Asto. El alcance es deliberadamente pequeño:
