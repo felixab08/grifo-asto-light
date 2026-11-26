@@ -14,7 +14,7 @@ export const routes: Routes = [
     title: 'Medidas de tanques | Grifo Asto',
     loadComponent: () =>
       import('@features/mediciones/mediciones.page').then((m) => m.MedicionesPage),
-    canActivate: [authGuard],
+    canActivate: [],
   },
   {
     path: '',
