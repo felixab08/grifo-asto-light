@@ -39,6 +39,7 @@
 
     <button
       type="button"
+      id="login-google"
       (click)="ingresarConGoogle()"
       [disabled]="cargando() || faltaConfigurar"
       [attr.aria-describedby]="faltaConfigurar ? 'config-faltante' : null"

@@ -5,12 +5,10 @@ import {
   GoogleAuthProvider,
   authState,
   getRedirectResult,
-  setPersistence,
-  signInWithPopup,
   signInWithRedirect,
   signOut,
 } from '@angular/fire/auth';
-import { browserLocalPersistence } from 'firebase/auth';
+import { browserLocalPersistence, signInWithPopup, setPersistence } from 'firebase/auth';
 import { Router } from '@angular/router';
 
 @Service()
@@ -29,7 +27,6 @@ export class AuthService {
   }
 
   async iniciarSesionConGoogle(): Promise<void> {
-
     const provider = new GoogleAuthProvider();
     provider.setCustomParameters({ prompt: 'select_account' });
 
@@ -56,9 +53,7 @@ export class AuthService {
   }
 
   private async ensureLocalPersistence(): Promise<void> {
-    await runInInjectionContext(this.injector, () =>
-      setPersistence(this.auth, browserLocalPersistence),
-    );
+    await setPersistence(this.auth, browserLocalPersistence);
   }
 
   private async resolveRedirectResult(): Promise<void> {
