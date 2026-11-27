@@ -7,6 +7,8 @@ import { Medicion } from '@core/mediciones/medicion.model';
 import { MedicionesService } from '@core/mediciones/mediciones.service';
 import { DieselPipe, PremiumPipe, RegularPipe } from '../../pipes';
 import { AlertService } from '../../service';
+import { AuthService } from '@core/auth/auth.service';
+import { Router } from '@angular/router';
 
 const MAX_MEASURE_CM = 230;
 
@@ -27,6 +29,8 @@ export class MedicionesPage {
   private readonly medicionesService = inject(MedicionesService);
   private readonly alertService = inject(AlertService);
   private readonly dialog = viewChild.required<ElementRef<HTMLDialogElement>>('dialogoMedida');
+  private readonly authService = inject(AuthService);
+  private router = inject(Router);
 
   readonly maxMeasure = MAX_MEASURE_CM;
   readonly saving = signal(false);
@@ -52,6 +56,15 @@ export class MedicionesPage {
       message: `La medida no puede superar ${MAX_MEASURE_CM} cm.`,
     });
   });
+  constructor() {
+    if (this.authService.errorRedirect() !== null) {
+      this.authService.errorRedirect.set(null);
+      this.authService.cerrarSesion();
+    }
+    if (!this.authService.autenticado()) {
+      this.router.navigate(['/login']);
+    }
+  }
 
   readonly medicionesResource = rxResource({
     stream: () => this.medicionesService.listarRecientes(),
