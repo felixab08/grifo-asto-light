@@ -1,6 +1,6 @@
 import { ApplicationConfig, LOCALE_ID, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { registerLocaleData } from '@angular/common';
+import { HashLocationStrategy, LocationStrategy, registerLocaleData } from '@angular/common';
 import localeEsPe from '@angular/common/locales/es-PE';
 
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
@@ -16,6 +16,10 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
+    {
+      provide: LocationStrategy,
+      useClass: HashLocationStrategy,
+    },
     {
       provide: LOCALE_ID,
       useValue: 'es-PE',

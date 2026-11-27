@@ -15,7 +15,7 @@ jobs:
       - name: Use Node
         uses: actions/setup-node@v4 #Configura el entorno de Node.js.
         with:
-          node-version: 24.6.0
+          node-version: 24.x #Angular 22 exige ^22.22.3 || ^24.15.0 || >=26.0.0.
           cache: npm #Reutiliza la caché de npm entre ejecuciones.
 
       - name: Install packages #Instala TODAS las dependencias, incluidas las de desarrollo (Angular CLI).
