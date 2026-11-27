@@ -19,10 +19,10 @@ export const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: 'mediciones',
+    redirectTo: 'login',
   },
   {
     path: '**',
-    redirectTo: 'mediciones',
+    redirectTo: 'login',
   },
 ];
