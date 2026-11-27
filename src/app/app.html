@@ -1,50 +1,8 @@
-<header class="border-b border-slate-200 bg-white">
-  <div class="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-4 sm:px-6">
-    <a
-      routerLink="/mediciones"
-      class="flex items-center gap-2.5 rounded-lg text-lg font-semibold text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600"
-    >
-      <span
-        class="grid size-9 place-items-center rounded-xl bg-emerald-600 text-white"
-        aria-hidden="true"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.8"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          class="size-5"
-        >
-          <path d="M12 3c3.5 4.2 6 7.4 6 10.5a6 6 0 0 1-12 0C6 10.4 8.5 7.2 12 3Z" />
-          <path d="M9.5 14.5a2.5 2.5 0 0 0 2.5 2.5" />
-        </svg>
-      </span>
-      Grifo Asto
-    </a>
+<front-navbar/>
 
-    @if (autenticado()) {
-      <div class="flex items-center gap-3">
-        <span class="hidden max-w-56 truncate text-sm text-slate-600 sm:inline">
-          {{ nombreUsuario() }}
-        </span>
-        <button
-          type="button"
-          (click)="cerrarSesion()"
-          class="rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600"
-        >
-          Salir
-        </button>
-      </div>
-    }
-  </div>
-</header>
-
-<main class="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6">
+<section class="container mx-auto md:mt-48 mt-40 bg-base-100">
   <router-outlet />
-</main>
+</section>
 
 @if (alertService.isAlert()) {
   <tyn-alert [alertMenu]="alertService.alertMenu()" />

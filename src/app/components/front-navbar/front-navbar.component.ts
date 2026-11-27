@@ -1,16 +1,18 @@
-import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Component, inject, computed, ChangeDetectionStrategy } from '@angular/core';
+
+import { AuthService } from '@core/auth/auth.service';
+import { AlertService } from '../../service';
 
 @Component({
   selector: 'front-navbar',
-  imports: [RouterLink],
+  imports: [],
   changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './front-navbar.component.html',
 })
 export class FrontNavbarComponent {
   // temas (persistencia localStorage)
-  public themes: string[] = ['retro', 'winter', 'valentine', 'aqua', 'forest'];
-  public selectedTheme: string = 'retro';
+  readonly themes: readonly string[] = ['retro', 'winter', 'valentine', 'dark', 'forest'];
+  selectedTheme = 'retro';
 
   constructor() {
     // inicializar tema desde localStorage (si existe)
@@ -23,18 +25,35 @@ export class FrontNavbarComponent {
     }
   }
 
-  applyTheme(theme: string) {
+  private readonly authService = inject(AuthService);
+  readonly alertService = inject(AlertService);
+
+  readonly autenticado = this.authService.autenticado;
+  readonly nombreUsuario = computed(() => {
+    const usuario = this.authService.usuario();
+    return usuario?.displayName || usuario?.email || 'Usuario';
+  });
+
+  async cerrarSesion(): Promise<void> {
+    await this.authService.cerrarSesion();
+  }
+
+  applyTheme(theme: string): void {
     try {
       document.documentElement.setAttribute('data-theme', theme);
       localStorage.setItem('theme', theme);
       this.selectedTheme = theme;
-    } catch (e) {
-      // ignore if not available
+    } catch {
+      // ignore if storage is not available
     }
   }
 
-  onThemeChange(event: Event) {
-    const value = (event.target as HTMLInputElement).value;
-    if (value) this.applyTheme(value);
+  onThemeChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.value) {
+      this.applyTheme(input.value);
+      // Quita el foco para que el dropdown de daisyUI se cierre.
+      input.blur();
+    }
   }
 }

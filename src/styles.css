@@ -8,7 +8,6 @@ body {
 }
 
 body {
-  background-color: #f8fafc;
   color: #0f172a;
   font-family:
     ui-sans-serif,
@@ -20,4 +19,13 @@ body {
     Arial,
     sans-serif;
   -webkit-font-smoothing: antialiased;
+}
+/* this will not work */
+.modal-box svg {
+  fill: red;
+}
+
+/* this will work */
+.modal-box svg path {
+  fill: red;
 }

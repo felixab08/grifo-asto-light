@@ -3,10 +3,11 @@ import { RouterLink, RouterOutlet } from '@angular/router';
 import { AuthService } from '@core/auth/auth.service';
 import { AlertComponent } from './components/alert/alert.component';
 import { AlertService } from './service';
+import { FrontNavbarComponent } from './components/front-navbar/front-navbar.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, RouterLink, AlertComponent],
+  imports: [RouterOutlet, AlertComponent, FrontNavbarComponent],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
